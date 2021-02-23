@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.808.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "danskebanktask", "danskebanktask\danskebanktask.csproj", "{A3ADD694-EF72-4084-B3D7-AEB5B029AFA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7069C8B0-390E-45DB-ADE3-761FF39C4725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3ADD694-EF72-4084-B3D7-AEB5B029AFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3ADD694-EF72-4084-B3D7-AEB5B029AFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3ADD694-EF72-4084-B3D7-AEB5B029AFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3ADD694-EF72-4084-B3D7-AEB5B029AFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D4B7AF36-1AE9-4AF3-9187-855330AF19D1}
+	EndGlobalSection
+EndGlobal
