@@ -11,28 +11,67 @@ namespace danskebanktask
     public class Consumer
     {
         string filePath = "../../../DB/";
-        public Consumer()
+        public String getSearchResults(String MuncipalityName, String inputDate)
         {
 
-            //cheak whether muncipality is exists
-            DirectoryInfo d = new DirectoryInfo(filePath);//Assuming Test is your Folder
-            FileInfo[] Files = d.GetFiles("*.json"); //Getting Text files
-
-            bool isMuncipalityExists = false;
-            String fileFullPath = "";
-            int count = 1;
-
-            foreach (FileInfo file in Files)
+            string result = "";
+            try
             {
-                Muncipality muncipality = new JSONReader().GetMuncipality(file.FullName);
-                //append data
-                Console.WriteLine("Munc Record Number : " + count);
-                Console.WriteLine("Muncipality Record Data : ");
-                Console.WriteLine();
-                Console.WriteLine(JsonConvert.DeserializeObject(File.ReadAllText(file.FullName)).ToString());
-                Console.WriteLine();
-                count++;
+                //cheak whether muncipality is exists
+                DirectoryInfo d = new DirectoryInfo(filePath);//Assuming Test is your Folder
+                FileInfo[] Files = d.GetFiles("*.json"); //Getting Text files
+
+                bool isMuncipalityExists = false;
+                String fileFullPath = "";
+
+                foreach (FileInfo file in Files)
+                {
+
+                    if (MuncipalityName.ToLower().Equals(file.Name.Replace(".json", "").ToLower()))
+                    {
+                        isMuncipalityExists = true;
+                        fileFullPath = file.FullName;
+                        break;
+                    }
+                    else
+                    {
+                        isMuncipalityExists = false;
+                    }
+                }
+                if (isMuncipalityExists)
+                {
+                    //  Console.WriteLine("file exist, append data : " + fileFullPath);
+                    //read file
+                    Muncipality resultMuncipality = new JSONReader().GetMuncipality(fileFullPath);
+
+                    // Console.WriteLine("Munc Name : " + resultMuncipality.Name);
+                    result = " Muncipality :  " + resultMuncipality.Name;
+                    List<Daily> dailyTax = resultMuncipality.dailyTax;
+
+                    foreach (Daily dl in dailyTax)
+                    {
+                        if (dl.period_daily.ToLower().Equals(inputDate))
+                        {
+                            result += " Date : " + inputDate;
+                            result += "Tax : " + dl.taxPer_Daily.ToString();
+                        }
+                    }
+
+                }
+                else
+                {
+                    result = "Not found any results on given data";
+                }
+
             }
+            catch (Exception ex)
+            {
+                new ErrorHandling().LogErrorsToTextFile(ex); // log errors to the text file at DB folder
+            }
+
+            return result;
+
         }
+
     }
 }

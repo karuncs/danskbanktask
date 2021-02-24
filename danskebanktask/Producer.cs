@@ -29,77 +29,88 @@ namespace danskebanktask
         {
 
             //cheak whether muncipality is exists
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
 
-            DirectoryInfo d = new DirectoryInfo(filePath);//Assuming Test is your Folder
+            }
+            DirectoryInfo d = new DirectoryInfo(filePath);
             FileInfo[] Files = d.GetFiles("*.json"); //Getting Text files
             bool isMuncipalityExists = false;
             String fileFullPath = "";
-
-            foreach (FileInfo file in Files)
+            try
             {
+                foreach (FileInfo file in Files)
+                {
 
-                if (MuncipalityName.ToLower().Equals(file.Name.Replace(".json", "").ToLower()))
-                {
-                    isMuncipalityExists = true;
-                    fileFullPath = file.FullName;
-                    break;
+                    if (MuncipalityName.ToLower().Equals(file.Name.Replace(".json", "").ToLower()))
+                    {
+                        isMuncipalityExists = true;
+                        fileFullPath = file.FullName;
+                        break;
+                    }
+                    else
+                    {
+                        isMuncipalityExists = false;
+                    }
                 }
-                else
+
+                if (isMuncipalityExists)
                 {
-                    isMuncipalityExists = false;
+                    Console.WriteLine("file exist, append data : " + fileFullPath);
+                    //read file
+                    Muncipality muncipality = new JSONReader().GetMuncipality(fileFullPath);
+                    //append data
+                    Console.WriteLine("Munc Name : " + muncipality.Name);
+                    listDailyTax = muncipality.dailyTax;
+                    listWeeklyTax = muncipality.weeklyTax;
+                    listMonthlyTax = muncipality.monthlyTax;
+                    listYearlyTax = muncipality.yearlyTax;
                 }
+
+                //Create Daily Tax  info
+                Daily dailyObj = new Daily();
+                dailyObj.taxPer_Daily = dailyTax_Percentage;
+                dailyObj.period_daily = period_daily;
+                listDailyTax.Add(dailyObj);
+
+                //Create weekly tax info
+                Weekly weeklyObj = new Weekly();
+                weeklyObj.taxPer_Week = weeklyTax_Percentage;
+                weeklyObj.period_week = period_weekly;
+                listWeeklyTax.Add(weeklyObj);
+
+                //Create monthly tax info
+                Monthly monthlyObj = new Monthly();
+                monthlyObj.taxPer_Month = monthlyTax_Percentage;
+                monthlyObj.period_month = period_monthly;
+                listMonthlyTax.Add(monthlyObj);
+
+                //Create yearly tax info
+                Yearly yearlyObj = new Yearly();
+                yearlyObj.taxPer_year = yearlyTax_Percentage;
+                yearlyObj.period_year = period_yearly;
+                listYearlyTax.Add(yearlyObj);
+
+                //add Muncipality Data to the JSON Object
+                Muncipality JsonObj_Muncipality = new Muncipality();
+                JsonObj_Muncipality.Name = MuncipalityName;
+
+                JsonObj_Muncipality.dailyTax = listDailyTax;
+                JsonObj_Muncipality.weeklyTax = listWeeklyTax;
+                JsonObj_Muncipality.monthlyTax = listMonthlyTax;
+                JsonObj_Muncipality.yearlyTax = listYearlyTax;
+
+                string objjsonData = JsonConvert.SerializeObject(JsonObj_Muncipality);
+                File.WriteAllText(filePath + JsonObj_Muncipality.Name + ".json", objjsonData);
+
+                // Console.WriteLine(objjsonData);
+            }
+            catch (Exception ex)
+            {
+                new ErrorHandling().LogErrorsToTextFile(ex); // log errors to the text file at DB folder
             }
 
-            if (isMuncipalityExists)
-            {
-                Console.WriteLine("file exist, append data : " + fileFullPath);
-                //read file
-                Muncipality muncipality = new JSONReader().GetMuncipality(fileFullPath);
-                //append data
-                Console.WriteLine("Munc Name : " + muncipality.Name);
-                listDailyTax = muncipality.dailyTax;
-                listWeeklyTax = muncipality.weeklyTax;
-                listMonthlyTax = muncipality.monthlyTax;
-                listYearlyTax = muncipality.yearlyTax;
-            }
-
-            //Create Daily Tax  info
-            Daily dailyObj = new Daily();
-            dailyObj.taxPer_Daily = dailyTax_Percentage;
-            dailyObj.period_daily = period_daily;
-            listDailyTax.Add(dailyObj);
-
-            //Create weekly tax info
-            Weekly weeklyObj = new Weekly();
-            weeklyObj.taxPer_Week = weeklyTax_Percentage;
-            weeklyObj.period_week = period_weekly;
-            listWeeklyTax.Add(weeklyObj);
-
-            //Create monthly tax info
-            Monthly monthlyObj = new Monthly();
-            monthlyObj.taxPer_Month = monthlyTax_Percentage;
-            monthlyObj.period_month = period_monthly;
-            listMonthlyTax.Add(monthlyObj);
-
-            //Create yearly tax info
-            Yearly yearlyObj = new Yearly();
-            yearlyObj.taxPer_year = yearlyTax_Percentage;
-            yearlyObj.period_year = period_yearly;
-            listYearlyTax.Add(yearlyObj);
-
-            //add Muncipality Data to the JSON Object
-            Muncipality JsonObj_Muncipality = new Muncipality();
-            JsonObj_Muncipality.Name = MuncipalityName;
-
-            JsonObj_Muncipality.dailyTax = listDailyTax;
-            JsonObj_Muncipality.weeklyTax = listWeeklyTax;
-            JsonObj_Muncipality.monthlyTax = listMonthlyTax;
-            JsonObj_Muncipality.yearlyTax = listYearlyTax;
-
-            string objjsonData = JsonConvert.SerializeObject(JsonObj_Muncipality);
-            File.WriteAllText(filePath + JsonObj_Muncipality.Name + ".json", objjsonData);
-
-            // Console.WriteLine(objjsonData);
 
         }
     }
